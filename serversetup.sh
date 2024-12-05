@@ -14,7 +14,9 @@ HOME_DIR="/var/lib/webgen"
 BIN_DIR="$HOME_DIR/bin"
 HTML_DIR="$HOME_DIR/HTML"
 GENERATE_INDEX_SCRIPT="generate_index"
-HTML_FILE="index.html"
+DOC_DIR="$HOME_DIR/documents"
+FILE_ONE="$HOME_DIR/documents/file-one"
+FILE_TWO="$HOME_DIR/documents/file-two"
 
 # Create the system user
 echo "Creating system user: $USER..."
@@ -22,7 +24,7 @@ useradd -r -m -d "$HOME_DIR" -s /usr/sbin/nologin "$USER"
 
 # Create necessary directories
 echo "Creating directory structure..."
-mkdir -p "$BIN_DIR" "$HTML_DIR"
+mkdir -p "$BIN_DIR" "$HTML_DIR" "$DOC_DIR"
 
 # move generate_index to the desired location
 echo "Copying files to directories..."
@@ -41,6 +43,19 @@ chown -R "$USER:$USER" "$HOME_DIR"
 # Verify ownership and structure
 echo "Verifying ownership and directory structure..."
 ls -lR "$HOME_DIR"
+
+# Create file-one
+echo "Creating file-one here: $FILE_ONE"
+cat <<EOF > "$FILE_ONE"
+This is file one.
+EOF
+
+# Create file-two
+echo "Creating file-two here: $FILE_TWO"
+cat <<EOF > "$FILE_TWO"
+This is file two.
+EOF
+
 
 
 ## Task-2
@@ -74,7 +89,7 @@ cat <<EOF > "$TIMER_FILE"
 Description=Run Generate Index HTML Service at 05:00 daily
 
 [Timer]
-OnCalendar=*-*-* 05:00:00
+OnCalendar=*-*-* 07:04:00
 Persistent=true
 
 [Install]
@@ -96,7 +111,7 @@ systemctl enable --now generate-index.timer
 NGINX_CONF_PATH="/etc/nginx/nginx.conf"
 SERVER_BLOCK="/etc/nginx/sites-available/webgen_server_block.conf"
 WEB_ROOT="/var/lib/webgen/HTML"
-SERVER_IP="64.23.190.247"
+SERVER_IP=$(ip -4 a show dev eth0 | grep inet | awk '{print $2}' | cut -d/ -f1)
 SITES_AVAILABLE="/etc/nginx/sites-available"
 SITES_ENABLED="/etc/nginx/sites-enabled"
 
@@ -107,7 +122,31 @@ echo "NGINX is installed successfully."
 
 # Updating user in nginx.conf
 echo "Updating nginx.conf to use the 'webgen' user..."
-sed -i 's/^user .*/user webgen;/' "$NGINX_CONF_PATH"
+rm $NGINX_CONF_PATH
+
+cat > "$NGINX_CONF_PATH" <<EOF
+user webgen;
+worker_processes  1;
+
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include sites-enabled/*;
+    include       mime.types;
+    default_type  application/octet-stream;
+
+
+    sendfile        on;
+
+    keepalive_timeout  65;
+
+}
+EOF
 
 # create the following directories for server block
 echo "Creating sites-available and sites-enabled directory"
