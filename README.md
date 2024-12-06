@@ -1,4 +1,32 @@
-# assignment_three_part_one_acit2420
+# assignment_three_part_two_acit2420
+
+In this project the previosuly created serversetup.sh is modified to include the new directory structure for the system user "webgen". The new directory structure is as follows:
+
+ ├── bin/
+ │   |  
+ |   └── generate_index
+ ├── documents/
+ │     |  
+ |     ├── file-one
+ |     │   
+ |     └── file-two
+ └── HTML/
+       └── index.html
+
+
+The `nginx.conf` is modified to set up two servers:
+
+1. **Web Server**  
+    This will listen to port 80 and will serve an `index.html` on each server.
+
+2. **File Server**  
+    This will listen to port 80 and will serve the two files `file-one` and `file-two` in the `documents` directory.
+
+
+A load-balancer is placed using Digital Ocean to balance load between the servers.
+
+
+To use the scripts please follow the steps mentioned below.
 
 Download both generate_index and serversetup.sh.
 
@@ -29,7 +57,7 @@ Q2:  How will you verify that the timer is active and that the service runs succ
 
 Ans: To verify that the time is active I will use the following command:
 
-```bash
+a```bash
 systemctl list-timers | grep generate-index
 ```
 
