@@ -1,7 +1,7 @@
 # assignment_three_part_two_acit2420
 
 In this project the previosuly created serversetup.sh is modified to include the new directory structure for the system user "webgen". The new directory structure is as follows:
-
+```
  ├── bin/
  │   |  
  |   └── generate_index
@@ -12,7 +12,7 @@ In this project the previosuly created serversetup.sh is modified to include the
  |     └── file-two
  └── HTML/
        └── index.html
-
+```
 
 The `nginx.conf` is modified to set up two servers:
 
