@@ -89,7 +89,7 @@ cat <<EOF > "$TIMER_FILE"
 Description=Run Generate Index HTML Service at 05:00 daily
 
 [Timer]
-OnCalendar=*-*-* 04:51:10
+OnCalendar=*-*-* 05:00:00
 Persistent=true
 
 [Install]
