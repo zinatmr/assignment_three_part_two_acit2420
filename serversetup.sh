@@ -89,7 +89,7 @@ cat <<EOF > "$TIMER_FILE"
 Description=Run Generate Index HTML Service at 05:00 daily
 
 [Timer]
-OnCalendar=*-*-* 07:04:00
+OnCalendar=*-*-* 03:15:00
 Persistent=true
 
 [Install]
@@ -122,32 +122,8 @@ echo "NGINX is installed successfully."
 
 # Updating user in nginx.conf
 echo "Updating nginx.conf to use the 'webgen' user..."
-rm $NGINX_CONF_PATH
-
-cat > "$NGINX_CONF_PATH" <<EOF
-user webgen;
-worker_processes  1;
-
-
-
-events {
-    worker_connections  1024;
-}
-
-
-http {
-    include sites-enabled/*;
-    include       mime.types;
-    default_type  application/octet-stream;
-
-
-    sendfile        on;
-
-    keepalive_timeout  65;
-
-}
-EOF
-
+sed -i 's/#user http;/user webgen;/' "$NGINX_CONF_PATH"
+sed -i 's/include       mime.types;/#include       mime.types;/' "$NGINX_CONF_PATH"
 # create the following directories for server block
 echo "Creating sites-available and sites-enabled directory"
 mkdir -p "$SITES_AVAILABLE" "$SITES_ENABLED"
