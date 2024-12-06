@@ -89,7 +89,7 @@ cat <<EOF > "$TIMER_FILE"
 Description=Run Generate Index HTML Service at 05:00 daily
 
 [Timer]
-OnCalendar=*-*-* 03:15:00
+OnCalendar=*-*-* 04:51:10
 Persistent=true
 
 [Install]
@@ -114,6 +114,7 @@ WEB_ROOT="/var/lib/webgen/HTML"
 SERVER_IP=$(ip -4 a show dev eth0 | grep inet | awk '{print $2}' | cut -d/ -f1)
 SITES_AVAILABLE="/etc/nginx/sites-available"
 SITES_ENABLED="/etc/nginx/sites-enabled"
+FILE_PATH="/var/lib/webgen/documents"
 
 # Installing NGINX
 echo "Installing NGINX..."
@@ -139,6 +140,14 @@ server {
 
     location / {
         try_files \$uri \$uri/ =404;
+    }
+
+    # File server block
+    location /files {
+        alias $FILE_PATH;    # Path to the file directory
+        autoindex on;                # Enables the directory listing
+        autoindex_exact_size off;    # Shows file sizes, human-readable
+        autoindex_localtime on;      # Displays file timestamps
     }
 }
 EOF
