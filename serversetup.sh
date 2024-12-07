@@ -38,8 +38,6 @@ fi
 # Set ownership of the directories and files
 echo "Setting ownership to $USER..."
 chown -R "$USER:$USER" "$HOME_DIR"
-#chmod +x $BIN_DIR/$GENERATE_INDEX_SCRIPT
-#$BIN_DIR/$GENERATE_INDEX_SCRIPT
 # Verify ownership and structure
 echo "Verifying ownership and directory structure..."
 ls -lR "$HOME_DIR"
@@ -193,7 +191,7 @@ ufw --force enable
 
 # Checking UFW Status
 echo "Checking UFW status..."
-ufw status verbose
+#ufw status verbose
 
 
 
